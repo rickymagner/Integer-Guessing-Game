@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import messagebox
 import random as random
+import time
 
 from oeis_scraper import OEISFetcher
 
@@ -81,14 +82,17 @@ def toggleScreens(screen1, screen2):
 ### Set up start page ###
 def begin_game():
     number = startScreen.get_input()
-    if is_integer(number) and int(number) < 20:
+    if is_integer(number) and (int(number) <= 20) and (int(number) > 0):
         global seq_length
         seq_length = int(number)
         sequence = oeis.get_random_sequence()
+        while len(sequence) <= seq_length:
+            sequence = oeis.get_random_sequence()
+            time.sleep(.2)
         toggleScreens(startScreen, gameScreen)
         gameScreen.set_text("Guess the next entry in the sequence \n" + str(sequence[0:seq_length])[:-1][1:] + ", ...")
     else:
-        messagebox.showerror("Error", "Please enter an integer less than 20.")
+        messagebox.showerror("Error", "Please enter an integer between 1 and 20.")
 
 startScreen = Screen()
 startText = "Welcome to the integer guessing game! Pick a number of entries to see from the sequence."
@@ -121,7 +125,8 @@ def try_next():
         toggleScreens(winScreen, gameScreen)
         gameScreen.set_text("Guess the next entry in the sequence \n" + str(oeis.sequence[0:seq_length])[:-1][1:] + ", ...")
     else:
-        pass
+        toggleScreens(winScreen, gameScreen)
+        gameScreen.set_text("You've guessed all known entries of this sequence! The OEIS id was " + str(oeis.id))
 
 winScreen = Screen(submits=False)
 winScreen.set_text("Congratulations! Your guess was correct!")
