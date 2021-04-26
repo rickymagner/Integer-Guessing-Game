@@ -1,1 +1,3 @@
-# Integer-Guessing-Game
+# The Integer Sequence Guessing Game
+
+
